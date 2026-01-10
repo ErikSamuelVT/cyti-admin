@@ -1,5 +1,7 @@
 'use client';
 import {
+  Box,
+  Button,
   Paper,
   Table,
   TableBody,
@@ -14,6 +16,7 @@ import { useState } from 'react';
 
 import { TableLog, TableOperators, TableUnits } from '@/app/lib/interfaces';
 import { isTableLogArray, isTableOperatorsArray, isTableUnitsArray } from '@/app/lib/typeGuards';
+import { useLogStore } from '@/app/store/logStore';
 
 interface Table {
   headers: string[];
@@ -29,11 +32,13 @@ export default function TableComponent({ title, structureTable }: TableProps) {
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
 
+  const { deleteRedcord } = useLogStore();
+
+  const { headers, rowsData } = structureTable;
+
   let tableLogRows: TableLog[] = [];
   let tableOperatorRows: TableOperators[] = [];
   let tableUnitsRows: TableUnits[] = [];
-
-  const { headers, rowsData } = structureTable;
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -72,6 +77,7 @@ export default function TableComponent({ title, structureTable }: TableProps) {
                   {header}
                 </TableCell>
               ))}
+              {tableLogRows.length > 0 && <TableCell align="center">Acciones</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -93,6 +99,18 @@ export default function TableComponent({ title, structureTable }: TableProps) {
                     ) : (
                       <TableCell align="center">{item.destinity}</TableCell>
                     )}
+                    <TableCell align="center">
+                      <Box className="flex gap-1 justify-center">
+                        <Button
+                          onClick={() => deleteRedcord(item.id)}
+                          variant="contained"
+                          size="small"
+                          color="error"
+                        >
+                          Borrar
+                        </Button>
+                      </Box>
+                    </TableCell>
                   </TableRow>
                 ))}
 
