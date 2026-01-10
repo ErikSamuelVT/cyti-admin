@@ -1,5 +1,7 @@
 'use client';
 import {
+  Box,
+  Button,
   Paper,
   Table,
   TableBody,
@@ -14,38 +16,34 @@ import { useState } from 'react';
 
 import { TableLog, TableOperators, TableUnits } from '@/app/lib/interfaces';
 import { isTableLogArray, isTableOperatorsArray, isTableUnitsArray } from '@/app/lib/typeGuards';
-
-interface Table {
-  headers: string[];
-  rowsData: TableLog[] | TableOperators[] | TableUnits[];
-}
+import { useLogStore } from '@/app/store/logStore';
 
 interface TableProps {
   title: string;
-  structureTable: Table;
+  headers: string[];
 }
 
-export default function TableComponent({ title, structureTable }: TableProps) {
+export default function TableComponent({ title, headers }: TableProps) {
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
+
+  const { records, deleteRedcord } = useLogStore();
 
   let tableLogRows: TableLog[] = [];
   let tableOperatorRows: TableOperators[] = [];
   let tableUnitsRows: TableUnits[] = [];
-
-  const { headers, rowsData } = structureTable;
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
 
   const data = () => {
-    if (isTableLogArray(rowsData)) {
-      tableLogRows = rowsData;
-    } else if (isTableOperatorsArray(rowsData)) {
-      tableOperatorRows = rowsData;
-    } else if (isTableUnitsArray(rowsData)) {
-      tableUnitsRows = rowsData;
+    if (isTableLogArray(records)) {
+      tableLogRows = records;
+    } else if (isTableOperatorsArray(records)) {
+      tableOperatorRows = records;
+    } else if (isTableUnitsArray(records)) {
+      tableUnitsRows = records;
     }
   };
 
@@ -54,7 +52,7 @@ export default function TableComponent({ title, structureTable }: TableProps) {
   return (
     <>
       <h3 className="text-2xl font-semibold">{title}</h3>
-      {rowsData.length === 0 && (
+      {records.length === 0 && (
         <div className="flex justify-center items-center rounded-lg shadow-lg min-h-[300]">
           <p className="mt-10 text-gray-500">No hay registros disponibles</p>
         </div>
@@ -62,7 +60,7 @@ export default function TableComponent({ title, structureTable }: TableProps) {
 
       <TableContainer
         component={Paper}
-        className={`${rowsData.length === 0 && 'hidden'} mt-5 max-h-[430]`}
+        className={`${records.length === 0 && 'hidden'} mt-5 max-h-[430]`}
       >
         <Table aria-label="simple table">
           <TableHead>
@@ -72,6 +70,7 @@ export default function TableComponent({ title, structureTable }: TableProps) {
                   {header}
                 </TableCell>
               ))}
+              {tableLogRows.length > 0 && <TableCell align="center">Acciones</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -93,6 +92,18 @@ export default function TableComponent({ title, structureTable }: TableProps) {
                     ) : (
                       <TableCell align="center">{item.destinity}</TableCell>
                     )}
+                    <TableCell align="center">
+                      <Box className="flex gap-1 justify-center">
+                        <Button
+                          onClick={() => deleteRedcord(item.id)}
+                          variant="contained"
+                          size="small"
+                          color="error"
+                        >
+                          Borrar
+                        </Button>
+                      </Box>
+                    </TableCell>
                   </TableRow>
                 ))}
 
@@ -126,7 +137,7 @@ export default function TableComponent({ title, structureTable }: TableProps) {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[]}
-                count={structureTable.rowsData.length}
+                count={records.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
