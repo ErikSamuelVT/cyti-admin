@@ -18,16 +18,23 @@ import { TableLog, TableOperators, TableUnits } from '@/app/lib/interfaces';
 import { isTableLogArray, isTableOperatorsArray, isTableUnitsArray } from '@/app/lib/typeGuards';
 import { useLogStore } from '@/app/store/logStore';
 
-interface TableProps {
-  title: string;
+interface Table {
   headers: string[];
+  rowsData: TableLog[] | TableOperators[] | TableUnits[];
 }
 
-export default function TableComponent({ title, headers }: TableProps) {
+interface TableProps {
+  title: string;
+  structureTable: Table;
+}
+
+export default function TableComponent({ title, structureTable }: TableProps) {
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
 
-  const { records, deleteRedcord } = useLogStore();
+  const { deleteRedcord } = useLogStore();
+
+  const { headers, rowsData } = structureTable;
 
   let tableLogRows: TableLog[] = [];
   let tableOperatorRows: TableOperators[] = [];
@@ -38,12 +45,12 @@ export default function TableComponent({ title, headers }: TableProps) {
   };
 
   const data = () => {
-    if (isTableLogArray(records)) {
-      tableLogRows = records;
-    } else if (isTableOperatorsArray(records)) {
-      tableOperatorRows = records;
-    } else if (isTableUnitsArray(records)) {
-      tableUnitsRows = records;
+    if (isTableLogArray(rowsData)) {
+      tableLogRows = rowsData;
+    } else if (isTableOperatorsArray(rowsData)) {
+      tableOperatorRows = rowsData;
+    } else if (isTableUnitsArray(rowsData)) {
+      tableUnitsRows = rowsData;
     }
   };
 
@@ -52,7 +59,7 @@ export default function TableComponent({ title, headers }: TableProps) {
   return (
     <>
       <h3 className="text-2xl font-semibold">{title}</h3>
-      {records.length === 0 && (
+      {rowsData.length === 0 && (
         <div className="flex justify-center items-center rounded-lg shadow-lg min-h-[300]">
           <p className="mt-10 text-gray-500">No hay registros disponibles</p>
         </div>
@@ -60,7 +67,7 @@ export default function TableComponent({ title, headers }: TableProps) {
 
       <TableContainer
         component={Paper}
-        className={`${records.length === 0 && 'hidden'} mt-5 max-h-[430]`}
+        className={`${rowsData.length === 0 && 'hidden'} mt-5 max-h-[430]`}
       >
         <Table aria-label="simple table">
           <TableHead>
@@ -137,7 +144,7 @@ export default function TableComponent({ title, headers }: TableProps) {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[]}
-                count={records.length}
+                count={structureTable.rowsData.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

@@ -18,7 +18,13 @@ export default function Home() {
             <Form />
           </Grid>
           <Grid size={{ xs: 12, md: 8 }} className="p-4">
-            <TableComponent title="Bitácora" headers={['Fecha', 'Operador', 'Unidad', 'Destino']} />
+            <TableComponent
+              title="Bitácora"
+              structureTable={{
+                headers: ['Fecha', 'Operador', 'Unidad', 'Destino'],
+                rowsData: records,
+              }}
+            />
           </Grid>
         </Grid>
       </main>
