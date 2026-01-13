@@ -7,6 +7,7 @@ type Store = {
   records: TableLog[];
   addRecord: (record: TableLog) => void;
   deleteRedcord: (id: string) => void;
+  updateRecord: (recordUpdated: TableLog) => void;
 };
 
 export const useLogStore = create<Store>()(
@@ -30,6 +31,13 @@ export const useLogStore = create<Store>()(
               return new Date(b.date).getTime() - new Date(a.date).getTime();
             });
           return { records: newRecords };
+        }),
+      updateRecord: (recordUpdated: TableLog) =>
+        set((state) => {
+          const leakedRecord = state.records.map((record) =>
+            record.id === recordUpdated.id ? { ...record, ...recordUpdated } : record,
+          );
+          return { records: leakedRecord };
         }),
     }),
     {

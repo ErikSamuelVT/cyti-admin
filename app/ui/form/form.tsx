@@ -1,7 +1,7 @@
 import { Button, SelectChangeEvent, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import { destinations, operators, units } from '@/app/lib/constants';
 import { TableLog } from '@/app/lib/interfaces';
@@ -10,7 +10,13 @@ import { useLogStore } from '@/app/store/logStore';
 
 import SelectElement from '../select/select';
 
-export default function Form() {
+type props = {
+  recordToUpdate: TableLog | null;
+  setRecordToUpdate: React.Dispatch<React.SetStateAction<TableLog | null>>;
+};
+
+export default function Form({ recordToUpdate, setRecordToUpdate }: props) {
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const [data, setData] = useState<propsState>({
     date: '',
     operator: '',
@@ -19,7 +25,7 @@ export default function Form() {
     nDestinations: 0,
   });
 
-  const { addRecord } = useLogStore();
+  const { addRecord, updateRecord } = useLogStore();
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>,
@@ -47,7 +53,7 @@ export default function Form() {
       id: crypto.randomUUID(),
     };
 
-    addRecord(newRecord);
+    isUpdate ? updateRecord({ ...data, id: recordToUpdate!.id }) : addRecord(newRecord);
 
     setData({
       date: '',
@@ -56,7 +62,15 @@ export default function Form() {
       destinity: '',
       nDestinations: 0,
     });
+    setRecordToUpdate(null);
   };
+
+  useEffect(() => {
+    if (recordToUpdate) {
+      setData(recordToUpdate);
+      setIsUpdate(true);
+    }
+  }, [recordToUpdate]);
 
   return (
     <>
