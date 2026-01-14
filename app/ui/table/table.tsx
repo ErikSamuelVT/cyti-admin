@@ -26,9 +26,10 @@ interface Table {
 interface TableProps {
   title: string;
   structureTable: Table;
+  setRecordToUpdate?: React.Dispatch<React.SetStateAction<TableLog | null>>;
 }
 
-export default function TableComponent({ title, structureTable }: TableProps) {
+export default function TableComponent({ title, structureTable, setRecordToUpdate }: TableProps) {
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
 
@@ -101,6 +102,14 @@ export default function TableComponent({ title, structureTable }: TableProps) {
                     )}
                     <TableCell align="center">
                       <Box className="flex gap-1 justify-center">
+                        <Button
+                          onClick={() => setRecordToUpdate?.(item)}
+                          variant="contained"
+                          size="small"
+                          color="primary"
+                        >
+                          Actualizar
+                        </Button>
                         <Button
                           onClick={() => deleteRedcord(item.id)}
                           variant="contained"
