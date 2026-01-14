@@ -26,7 +26,7 @@ interface Table {
 interface TableProps {
   title: string;
   structureTable: Table;
-  setRecordToUpdate: React.Dispatch<React.SetStateAction<TableLog | null>>;
+  setRecordToUpdate?: React.Dispatch<React.SetStateAction<TableLog | null>>;
 }
 
 export default function TableComponent({ title, structureTable, setRecordToUpdate }: TableProps) {
@@ -103,7 +103,7 @@ export default function TableComponent({ title, structureTable, setRecordToUpdat
                     <TableCell align="center">
                       <Box className="flex gap-1 justify-center">
                         <Button
-                          onClick={() => setRecordToUpdate(item)}
+                          onClick={() => setRecordToUpdate?.(item)}
                           variant="contained"
                           size="small"
                           color="primary"
