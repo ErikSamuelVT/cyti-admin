@@ -2,7 +2,6 @@ import { SelectChangeEvent } from '@mui/material';
 import { ChangeEvent } from 'react';
 
 export interface TableLog {
-  type: 'log';
   id: string;
   date: string | null;
   operator: string;

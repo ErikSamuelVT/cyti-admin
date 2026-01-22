@@ -19,38 +19,31 @@ import { OperatorTrip, TableLog, UnitTrip } from '@/app/lib/interfaces';
 import { useLogStore } from '@/app/store/logStore';
 
 interface props {
-  title: string; //titulo para la tabla
-  headers: string[]; //Encabezados de la tabla
-  tableType: 'log' | 'operators' | 'units'; //Tipos de datos a mostrar en la tabla
-  setRecordToUpdate?: React.Dispatch<React.SetStateAction<TableLog | null>>; //Estado para indicar que la infirmación se va a editar
+  title: string;
+  headers: string[];
+  tableType: 'log' | 'operators' | 'units';
+  setRecordToUpdate?: React.Dispatch<React.SetStateAction<TableLog | null>>;
 }
 
 export default function TableComponent({ title, headers, tableType, setRecordToUpdate }: props) {
-  //Constantes para la paginación
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
 
-  //Storage con la función para eliminar registros
   const { records, deleteRedcord } = useLogStore();
 
-  //Función para detectar los cambios en los input
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
-  //Guardamos en cache la obtención de los viajes por unidad
+
   const tripsByUnit = useMemo(() => getTripsByUnits(records), [records]);
 
-  //Guardamos en cache la obtención de los viajes por operador
   const tripsByOperator = useMemo(() => getTripsByOperators(records), [records]);
 
-  //Obtenemos los datos dependiendo el tipo de dato que solicita el componente
   const data =
     tableType === 'log' ? records : tableType === 'operators' ? tripsByOperator : tripsByUnit;
 
-  //Calculamos la paginación dependiento el tamaño del arreglo de datos
   const paginatedRows = data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  //Retorno del jsx si es 'log'
   const rowsLog = (log: TableLog) => {
     return (
       <Fragment key={log.id}>
@@ -89,7 +82,6 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
     );
   };
 
-  //Retorno del jsx si es 'operators'
   const rowsOperators = (operator: OperatorTrip) => {
     return (
       <Fragment key={operator.operator}>
@@ -99,7 +91,6 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
     );
   };
 
-  //Retorno del jsx si es 'units'
   const rowsUnits = (unit: UnitTrip) => {
     return (
       <Fragment key={unit.unit}>

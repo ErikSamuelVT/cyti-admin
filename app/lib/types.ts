@@ -1,3 +1,3 @@
 import { TableLog } from './interfaces';
 
-export type dataForm = Omit<TableLog, 'id' | 'type'>;
+export type dataForm = Omit<TableLog, 'id'>;
