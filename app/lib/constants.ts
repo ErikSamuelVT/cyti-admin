@@ -1,13 +1,15 @@
 export const operators = [
   'Antonio Dominguez',
   'Everardo Bedolla',
+  'Gerardo Nazario',
+  'Helaman Rueda',
   'Iván Villarreal',
   'Javier Gijón',
   'Jonathan López',
   'Julio Soriano',
-  'Gerardo Nazario',
   'Omar Sanchéz',
   'Pablo Martinez',
+  'Rogelio Casanova',
   'Valentín Casanova',
 ];
 export const units = [
