@@ -1,28 +1,20 @@
 import { operators, units } from './constants';
-import { TableLog } from './interfaces';
+import { OperatorTrip, TableLog, UnitTrip } from './interfaces';
 
-export const getTripsByUnits = (records: TableLog[]) => {
+export const getTripsByUnits = (records: TableLog[]): UnitTrip[] => {
   return units
-    .map((unit) => {
-      const count = records.filter((item) => item.unit === unit).length;
-      return {
-        id: crypto.randomUUID(),
-        unit: unit,
-        nTripsUnit: count,
-      };
-    })
-    .sort((a, b) => b.nTripsUnit - a.nTripsUnit);
+    .map((unit) => ({
+      unit,
+      trips: records.filter((item) => item.unit === unit).length,
+    }))
+    .sort((a, b) => b.trips - a.trips);
 };
 
-export const getTripsByOperators = (records: TableLog[]) => {
+export const getTripsByOperators = (records: TableLog[]): OperatorTrip[] => {
   return operators
-    .map((op) => {
-      const count = records.filter((item) => item.operator === op).length;
-      return {
-        id: crypto.randomUUID(),
-        operator: op,
-        nTrips: count,
-      };
-    })
-    .sort((a, b) => b.nTrips - a.nTrips);
+    .map((operator) => ({
+      operator,
+      trips: records.filter((item) => item.operator === operator).length,
+    }))
+    .sort((a, b) => b.trips - a.trips);
 };

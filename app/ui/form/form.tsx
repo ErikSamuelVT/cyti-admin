@@ -5,7 +5,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 
 import { destinations, operators, units } from '@/app/lib/constants';
 import { TableLog } from '@/app/lib/interfaces';
-import { propsState } from '@/app/lib/types';
+import { dataForm } from '@/app/lib/types';
 import { useLogStore } from '@/app/store/logStore';
 
 import SelectElement from '../select/select';
@@ -15,17 +15,20 @@ type props = {
   setRecordToUpdate: React.Dispatch<React.SetStateAction<TableLog | null>>;
 };
 
-export default function Form({ recordToUpdate, setRecordToUpdate }: props) {
-  const [isUpdate, setIsUpdate] = useState<boolean>(false);
-  const [data, setData] = useState<propsState>({
-    date: '',
-    operator: '',
-    unit: '',
-    destinity: '',
-    nDestinations: 0,
-  });
+const initialState = {
+  date: null,
+  operator: '',
+  unit: '',
+  destinity: '',
+  nDestinations: 0,
+};
 
+export default function Form({ recordToUpdate, setRecordToUpdate }: props) {
   const { addRecord, updateRecord } = useLogStore();
+
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
+
+  const [data, setData] = useState<dataForm>(initialState);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>,
@@ -48,21 +51,16 @@ export default function Form({ recordToUpdate, setRecordToUpdate }: props) {
       return;
     }
 
-    const newRecord: TableLog = {
+    const record: TableLog = {
+      id: isUpdate ? recordToUpdate!.id : crypto.randomUUID(),
       ...data,
-      id: crypto.randomUUID(),
     };
 
-    isUpdate ? updateRecord({ ...data, id: recordToUpdate!.id }) : addRecord(newRecord);
+    isUpdate ? updateRecord(record) : addRecord(record);
 
-    setData({
-      date: '',
-      operator: '',
-      unit: '',
-      destinity: '',
-      nDestinations: 0,
-    });
+    setData(initialState);
     setRecordToUpdate(null);
+    setIsUpdate(false);
   };
 
   useEffect(() => {

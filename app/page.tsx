@@ -5,13 +5,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useState } from 'react';
 
 import { TableLog } from './lib/interfaces';
-import { useLogStore } from './store/logStore';
 import Form from './ui/form/form';
 import TableComponent from './ui/table/table';
 
 export default function Home() {
-  const { records } = useLogStore();
-
   const [recordToUpdate, setRecordToUpdate] = useState<TableLog | null>(null);
 
   return (
@@ -24,10 +21,8 @@ export default function Home() {
           <Grid size={{ xs: 12, md: 8 }} className="p-4">
             <TableComponent
               title="Bitácora"
-              structureTable={{
-                headers: ['Fecha', 'Operador', 'Unidad', 'Destino'],
-                rowsData: records,
-              }}
+              headers={['Fecha', 'Operador', 'Unidad', 'Destino']}
+              tableType="log"
               setRecordToUpdate={setRecordToUpdate}
             />
           </Grid>
