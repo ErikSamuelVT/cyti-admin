@@ -52,7 +52,6 @@ export default function Form({ recordToUpdate, setRecordToUpdate }: props) {
     }
 
     const record: TableLog = {
-      type: 'log',
       id: isUpdate ? recordToUpdate!.id : crypto.randomUUID(),
       ...data,
     };
