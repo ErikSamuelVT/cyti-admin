@@ -1,3 +1,3 @@
 import { TableLog } from './interfaces';
 
-export type propsState = Omit<TableLog, 'id'>;
+export type dataForm = Omit<TableLog, 'id' | 'type'>;

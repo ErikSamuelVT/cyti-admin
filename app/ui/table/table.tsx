@@ -12,55 +12,123 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
-import { useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
-import { TableLog, TableOperators, TableUnits } from '@/app/lib/interfaces';
-import { isTableLogArray, isTableOperatorsArray, isTableUnitsArray } from '@/app/lib/typeGuards';
+import { getTripsByOperators, getTripsByUnits } from '@/app/lib/getNTrips';
+import { OperatorTrip, TableLog, UnitTrip } from '@/app/lib/interfaces';
 import { useLogStore } from '@/app/store/logStore';
 
-interface Table {
-  headers: string[];
-  rowsData: TableLog[] | TableOperators[] | TableUnits[];
+interface props {
+  title: string; //titulo para la tabla
+  headers: string[]; //Encabezados de la tabla
+  tableType: 'log' | 'operators' | 'units'; //Tipos de datos a mostrar en la tabla
+  setRecordToUpdate?: React.Dispatch<React.SetStateAction<TableLog | null>>; //Estado para indicar que la infirmación se va a editar
 }
 
-interface TableProps {
-  title: string;
-  structureTable: Table;
-  setRecordToUpdate?: React.Dispatch<React.SetStateAction<TableLog | null>>;
-}
-
-export default function TableComponent({ title, structureTable, setRecordToUpdate }: TableProps) {
+export default function TableComponent({ title, headers, tableType, setRecordToUpdate }: props) {
+  //Constantes para la paginación
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
 
-  const { deleteRedcord } = useLogStore();
+  //Storage con la función para eliminar registros
+  const { records, deleteRedcord } = useLogStore();
 
-  const { headers, rowsData } = structureTable;
-
-  let tableLogRows: TableLog[] = [];
-  let tableOperatorRows: TableOperators[] = [];
-  let tableUnitsRows: TableUnits[] = [];
-
+  //Función para detectar los cambios en los input
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
+  //Guardamos en cache la obtención de los viajes por unidad
+  const tripsByUnit = useMemo(() => getTripsByUnits(records), [records]);
 
-  const data = () => {
-    if (isTableLogArray(rowsData)) {
-      tableLogRows = rowsData;
-    } else if (isTableOperatorsArray(rowsData)) {
-      tableOperatorRows = rowsData;
-    } else if (isTableUnitsArray(rowsData)) {
-      tableUnitsRows = rowsData;
-    }
+  //Guardamos en cache la obtención de los viajes por operador
+  const tripsByOperator = useMemo(() => getTripsByOperators(records), [records]);
+
+  //Obtenemos los datos dependiendo el tipo de dato que solicita el componente
+  const data =
+    tableType === 'log' ? records : tableType === 'operators' ? tripsByOperator : tripsByUnit;
+
+  //Calculamos la paginación dependiento el tamaño del arreglo de datos
+  const paginatedRows = data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+  //Retorno del jsx si es 'log'
+  const rowsLog = (log: TableLog) => {
+    return (
+      <Fragment key={log.id}>
+        <TableCell align="center">{log.date}</TableCell>
+        <TableCell align="center">{log.operator}</TableCell>
+        <TableCell align="center">{log.unit}</TableCell>
+        {log.nDestinations !== undefined && log.nDestinations > 0 ? (
+          <TableCell align="center">
+            {log.destinity} ({log.nDestinations})
+          </TableCell>
+        ) : (
+          <TableCell align="center">{log.destinity}</TableCell>
+        )}
+
+        <TableCell align="center">
+          <Box className="flex gap-1 justify-center">
+            <Button
+              onClick={() => setRecordToUpdate?.(log)}
+              variant="contained"
+              size="small"
+              color="primary"
+            >
+              Actualizar
+            </Button>
+            <Button
+              onClick={() => deleteRedcord(log.id)}
+              variant="contained"
+              size="small"
+              color="error"
+            >
+              Borrar
+            </Button>
+          </Box>
+        </TableCell>
+      </Fragment>
+    );
   };
 
-  data();
+  //Retorno del jsx si es 'operators'
+  const rowsOperators = (operator: OperatorTrip) => {
+    return (
+      <Fragment key={operator.operator}>
+        <TableCell align="center">{operator.operator}</TableCell>
+        <TableCell align="center">{operator.trips}</TableCell>
+      </Fragment>
+    );
+  };
+
+  //Retorno del jsx si es 'units'
+  const rowsUnits = (unit: UnitTrip) => {
+    return (
+      <Fragment key={unit.unit}>
+        <TableCell align="center">{unit.unit}</TableCell>
+        <TableCell align="center">{unit.trips}</TableCell>
+      </Fragment>
+    );
+  };
+
+  const renderUI = (item: TableLog | OperatorTrip | UnitTrip) => {
+    switch (tableType) {
+      case 'log':
+        const log = item as TableLog;
+        return rowsLog(log);
+      case 'operators':
+        const operator = item as OperatorTrip;
+        return rowsOperators(operator);
+      case 'units':
+        const unit = item as UnitTrip;
+        return rowsUnits(unit);
+      default:
+        break;
+    }
+  };
 
   return (
     <>
       <h3 className="text-2xl font-semibold">{title}</h3>
-      {rowsData.length === 0 && (
+      {records.length === 0 && (
         <div className="flex justify-center items-center rounded-lg shadow-lg min-h-[300]">
           <p className="mt-10 text-gray-500">No hay registros disponibles</p>
         </div>
@@ -68,7 +136,7 @@ export default function TableComponent({ title, structureTable, setRecordToUpdat
 
       <TableContainer
         component={Paper}
-        className={`${rowsData.length === 0 && 'hidden'} mt-5 max-h-[430]`}
+        className={`${records.length === 0 && 'hidden'} mt-5 max-h-[430]`}
       >
         <Table aria-label="simple table">
           <TableHead>
@@ -78,82 +146,23 @@ export default function TableComponent({ title, structureTable, setRecordToUpdat
                   {header}
                 </TableCell>
               ))}
-              {tableLogRows.length > 0 && <TableCell align="center">Acciones</TableCell>}
+              {tableType === 'log' && <TableCell align="center">Acciones</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableLogRows.length > 0 &&
-              tableLogRows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((item) => (
-                  <TableRow
-                    key={item.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell align="center">{item.date}</TableCell>
-                    <TableCell align="center">{item.operator}</TableCell>
-                    <TableCell align="center">{item.unit}</TableCell>
-                    {item.nDestinations !== undefined && item.nDestinations > 0 ? (
-                      <TableCell align="center">
-                        {item.destinity} ({item.nDestinations})
-                      </TableCell>
-                    ) : (
-                      <TableCell align="center">{item.destinity}</TableCell>
-                    )}
-                    <TableCell align="center">
-                      <Box className="flex gap-1 justify-center">
-                        <Button
-                          onClick={() => setRecordToUpdate?.(item)}
-                          variant="contained"
-                          size="small"
-                          color="primary"
-                        >
-                          Actualizar
-                        </Button>
-                        <Button
-                          onClick={() => deleteRedcord(item.id)}
-                          variant="contained"
-                          size="small"
-                          color="error"
-                        >
-                          Borrar
-                        </Button>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
-
-            {tableOperatorRows.length > 0 &&
-              tableOperatorRows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((item) => (
-                  <TableRow
-                    key={item.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell align="center">{item.operator}</TableCell>
-                    <TableCell align="center">{item.nTrips}</TableCell>
-                  </TableRow>
-                ))}
-
-            {tableUnitsRows.length > 0 &&
-              tableUnitsRows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((item) => (
-                  <TableRow
-                    key={item.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell align="center">{item.unit}</TableCell>
-                    <TableCell align="center">{item.nTripsUnit}</TableCell>
-                  </TableRow>
-                ))}
+            {paginatedRows.map((item, index) => {
+              return (
+                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  {renderUI(item)}
+                </TableRow>
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[]}
-                count={structureTable.rowsData.length}
+                count={records.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

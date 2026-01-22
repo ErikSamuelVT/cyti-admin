@@ -2,6 +2,7 @@ import { SelectChangeEvent } from '@mui/material';
 import { ChangeEvent } from 'react';
 
 export interface TableLog {
+  type: 'log';
   id: string;
   date: string | null;
   operator: string;
@@ -10,18 +11,17 @@ export interface TableLog {
   nDestinations?: number;
 }
 
-export interface TableOperators {
-  id: string;
+interface Trips {
+  trips: number;
+}
+
+export interface OperatorTrip extends Trips {
   operator: string;
-  nTrips: number;
 }
 
-export interface TableUnits {
-  id: string;
+export interface UnitTrip extends Trips {
   unit: string;
-  nTripsUnit: number;
 }
-
 export interface SelectElementProps {
   id: string;
   name: string;
