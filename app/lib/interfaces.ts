@@ -31,3 +31,9 @@ export interface SelectElementProps {
   ) => void;
   elements: string[];
 }
+
+export interface OperatorResult {
+  operator: string;
+  summary: string;
+  tripsByDay: string[];
+}

@@ -23,7 +23,7 @@ const initialState = {
   nDestinations: 0,
 };
 
-export default function Form({ recordToUpdate, setRecordToUpdate }: props) {
+export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: props) {
   const { addRecord, updateRecord } = useLogStore();
 
   const [isUpdate, setIsUpdate] = useState<boolean>(false);

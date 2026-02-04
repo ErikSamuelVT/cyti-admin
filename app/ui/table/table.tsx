@@ -12,7 +12,7 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 
 import { getTripsByOperators, getTripsByUnits } from '@/app/lib/getNTrips';
 import { OperatorTrip, TableLog, UnitTrip } from '@/app/lib/interfaces';

@@ -29,8 +29,11 @@ export default function Header() {
               display: 'flex',
             }}
           >
-            <Link href="/dashboard" className="my-2 text-white block">
+            <Link href="/dashboard" className="my-2 mx-2  text-white block">
               Estadísticas
+            </Link>
+            <Link href="/payroll" className="my-2 text-white block">
+              Generar nómina
             </Link>
           </Box>
         </Toolbar>
