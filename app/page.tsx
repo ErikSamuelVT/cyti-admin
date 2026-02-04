@@ -5,7 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useState } from 'react';
 
 import { TableLog } from './lib/interfaces';
-import Form from './ui/form/form';
+import RegistrationForm from './ui/forms/registrationForm';
 import TableComponent from './ui/table/table';
 
 export default function Home() {
@@ -16,7 +16,10 @@ export default function Home() {
       <main>
         <Grid container>
           <Grid size={{ xs: 12, md: 4 }} className="p-4">
-            <Form recordToUpdate={recordToUpdate} setRecordToUpdate={setRecordToUpdate} />
+            <RegistrationForm
+              recordToUpdate={recordToUpdate}
+              setRecordToUpdate={setRecordToUpdate}
+            />
           </Grid>
           <Grid size={{ xs: 12, md: 8 }} className="p-4">
             <TableComponent
