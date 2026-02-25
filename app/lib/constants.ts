@@ -7,6 +7,7 @@ export const operators = [
   'Javier Gijón',
   'Jonathan López',
   'Julio Soriano',
+  'Mauro Diaz',
   'Omar Sanchéz',
   'Pablo Martinez',
   'Rogelio Casanova',
