@@ -5,6 +5,7 @@ import { TableLog } from '../lib/interfaces';
 
 type Store = {
   records: TableLog[];
+  setRecords: (records: TableLog[]) => void;
   addRecord: (record: TableLog) => void;
   deleteRedcord: (id: string) => void;
   updateRecord: (recordUpdated: TableLog) => void;
@@ -14,6 +15,7 @@ export const useLogStore = create<Store>()(
   persist(
     (set) => ({
       records: [],
+      setRecords: (records: TableLog[]) => set({ records }),
       addRecord: (record: TableLog) =>
         set((state) => {
           const newRecords = [...state.records, record].sort((a, b) => {
