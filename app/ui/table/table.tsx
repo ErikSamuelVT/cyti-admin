@@ -12,8 +12,10 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { Fragment, useMemo, useState } from 'react';
 
+import { exportJSON, readJSONFile } from '@/app/lib/exportData';
 import { getTripsByOperators, getTripsByUnits } from '@/app/lib/getNTrips';
 import { OperatorTrip, TableLog, UnitTrip } from '@/app/lib/interfaces';
 import { useLogStore } from '@/app/store/logStore';
@@ -29,7 +31,19 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
 
-  const { records, deleteRedcord } = useLogStore();
+  const { records, deleteRedcord, setRecords } = useLogStore();
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -116,9 +130,49 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
     }
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    try {
+      const content = await readJSONFile(file);
+      const contentParsed = JSON.parse(content);
+      setRecords(contentParsed);
+      alert('Datos importados correctamente.');
+    } catch (error) {
+      alert('Error al procesar el archivo.');
+    }
+  };
+
   return (
     <>
-      <h3 className="text-2xl font-semibold">{title}</h3>
+      {tableType === 'log' && (
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <h3 className="text-2xl font-semibold">{title}</h3>
+          <div>
+            <Button
+              onClick={() => exportJSON(records)}
+              variant="outlined"
+              size="small"
+              color="primary"
+            >
+              Exportar
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              color="warning"
+              role={undefined}
+              tabIndex={-1}
+              component="label"
+            >
+              Importar
+              <VisuallyHiddenInput type="file" onChange={handleFileChange} multiple />
+            </Button>
+          </div>
+        </div>
+      )}
       {records.length === 0 && (
         <div className="flex justify-center items-center rounded-lg shadow-lg min-h-[300]">
           <p className="mt-10 text-gray-500">No hay registros disponibles</p>
