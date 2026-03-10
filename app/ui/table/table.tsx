@@ -11,14 +11,17 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Fragment, useMemo, useState } from 'react';
 
-import { exportJSON, readJSONFile } from '@/app/lib/exportData';
-import { getTripsByOperators, getTripsByUnits } from '@/app/lib/getNTrips';
 import { OperatorTrip, TableLog, UnitTrip } from '@/app/lib/interfaces';
+import { exportJSON, readJSONFile } from '@/app/lib/jsonUtils';
+import { getTripsByOperators, getTripsByUnits } from '@/app/lib/tripUtils';
 import { useLogStore } from '@/app/store/logStore';
+
+import Title from '../title/title';
 
 interface props {
   title: string;
@@ -148,9 +151,9 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
   return (
     <>
       {tableType === 'log' && (
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h3 className="text-2xl font-semibold">{title}</h3>
-          <div>
+        <Box className="flex justify-between">
+          <Title title={title} />
+          <Box className="flex gap-2">
             <Button
               onClick={() => exportJSON(records)}
               variant="outlined"
@@ -170,13 +173,15 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
               Importar
               <VisuallyHiddenInput type="file" onChange={handleFileChange} multiple />
             </Button>
-          </div>
-        </div>
+          </Box>
+        </Box>
       )}
       {records.length === 0 && (
-        <div className="flex justify-center items-center rounded-lg shadow-lg min-h-[300]">
-          <p className="mt-10 text-gray-500">No hay registros disponibles</p>
-        </div>
+        <Box className="flex justify-center items-center rounded-lg shadow-lg min-h-[300]">
+          <Typography variant="body1" className="mt-10 text-gray-500">
+            No hay registros disponibles
+          </Typography>
+        </Box>
       )}
 
       <TableContainer

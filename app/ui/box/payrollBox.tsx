@@ -3,6 +3,8 @@ import { Box, List, ListItem, ListItemText, Stack, Typography } from '@mui/mater
 
 import { usePayrollStore } from '@/app/store/payrollStore';
 
+import Title from '../title/title';
+
 export default function PayrollBox() {
   const { payroll } = usePayrollStore();
 
@@ -14,7 +16,7 @@ export default function PayrollBox() {
 
   return (
     <>
-      <h3 className="text-2xl font-semibold">Nómina</h3>
+      <Title title="Nómina" />
       <Box
         sx={{
           display: 'flex',
