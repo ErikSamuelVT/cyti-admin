@@ -7,5 +7,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <LocalizationProvider dateAdapter={AdapterDayjs}>{children}</LocalizationProvider>;
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+      {children}
+    </LocalizationProvider>
+  );
 }
