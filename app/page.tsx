@@ -12,7 +12,7 @@ export default function Home() {
   const [recordToUpdate, setRecordToUpdate] = useState<TableLog | null>(null);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <main>
         <Grid container>
           <Grid size={{ xs: 12, md: 4 }} className="p-4">

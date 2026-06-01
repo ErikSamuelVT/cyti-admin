@@ -32,10 +32,12 @@ export const units = [
 ];
 
 export const destinations = [
-  'Puebla seco',
   'Puebla refrigerado',
+  'Puebla seco',
+  'Tlapa',
   'Valle de bravo',
   'Celaya',
   'Tlapa',
   'Tlapa refrigerado',
+  'Chiautempan',
 ];

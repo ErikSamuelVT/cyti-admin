@@ -9,6 +9,7 @@ import { dataForm } from '@/app/lib/types';
 import { useLogStore } from '@/app/store/logStore';
 
 import SelectElement from '../select/select';
+import Title from '../title/title';
 
 type props = {
   recordToUpdate: TableLog | null;
@@ -72,7 +73,7 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
 
   return (
     <>
-      <h3 className="text-2xl font-semibold">Formulario de registro</h3>
+      <Title title="Formulario de registro" />
       <form className="flex flex-col gap-4 mt-2 max-h-[430]" onSubmit={handleSubmit}>
         <DatePicker
           name="date"

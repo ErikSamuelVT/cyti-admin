@@ -5,9 +5,11 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 
-import { filterByDateRange, summaryByOperator } from '@/app/lib/parseDate';
+import { filterByDateRange, summaryByOperator } from '@/app/lib/dateUtils';
 import { useLogStore } from '@/app/store/logStore';
 import { usePayrollStore } from '@/app/store/payrollStore';
+
+import Title from '../title/title';
 
 export default function PayRollForm() {
   const [start, setStart] = useState<string>('');
@@ -30,7 +32,7 @@ export default function PayRollForm() {
 
   return (
     <>
-      <h3 className="text-2xl font-semibold">Generar nómina</h3>
+      <Title title="Generar nómina" />
       <form className="flex flex-col gap-4 mt-2 max-h-[430]" onSubmit={handleSubmit}>
         <DatePicker
           name="to"
