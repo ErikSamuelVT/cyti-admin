@@ -37,5 +37,7 @@ export const destinations = [
   'Tlapa',
   'Valle de bravo',
   'Celaya',
+  'Tlapa',
+  'Tlapa refrigerado',
   'Chiautempan',
 ];

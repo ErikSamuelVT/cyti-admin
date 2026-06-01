@@ -106,7 +106,7 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
           onChange={handleChange}
           elements={destinations}
         />
-        {data.destinity === 'Puebla refrigerado' && (
+        {(data.destinity === 'Puebla refrigerado' || data.destinity === 'Tlapa refrigerado') && (
           <TextField
             label="Número de tiros"
             name="nDestinations"
