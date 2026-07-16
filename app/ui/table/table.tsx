@@ -176,6 +176,7 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
           </Box>
         </Box>
       )}
+
       {records.length === 0 && (
         <Box className="flex justify-center items-center rounded-lg shadow-lg min-h-[300]">
           <Typography variant="body1" className="mt-10 text-gray-500">
@@ -186,7 +187,7 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
 
       <TableContainer
         component={Paper}
-        className={`${records.length === 0 && 'hidden'} mt-5 max-h-[430]`}
+        className={`${records.length === 0 && 'hidden'} mt-5 min-h-[370]`}
       >
         <Table aria-label="simple table">
           <TableHead>
@@ -212,7 +213,7 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[]}
-                count={records.length}
+                count={data.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
