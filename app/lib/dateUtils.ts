@@ -1,5 +1,7 @@
 import { capitalize } from '@mui/material';
 
+import { days } from '@/app/lib/constants';
+
 import { OperatorResult, TableLog } from './interfaces';
 
 export function parseDate(date: string) {
@@ -53,4 +55,20 @@ export const summaryByOperator = (records: TableLog[]): OperatorResult[] => {
       tripsByDay,
     };
   });
+};
+export const filterByName = (payrollGeneral: OperatorResult[]) => {
+  const filtered = [...payrollGeneral].sort((a: any, b: any) =>
+    a.operator.localeCompare(b.operator),
+  );
+
+  filtered.forEach((element) => {
+    element.tripsByDay.sort((a, b) => {
+      console.log(a, b);
+      const indexA = days.findIndex((day) => a.toLowerCase().includes(day.toLowerCase()));
+      const indexB = days.findIndex((day) => b.toLowerCase().includes(day.toLowerCase()));
+
+      return indexA - indexB;
+    });
+  });
+  return filtered;
 };

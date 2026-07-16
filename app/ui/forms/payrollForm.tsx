@@ -3,18 +3,20 @@
 import { Button } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-import { useState } from 'react';
 
-import { filterByDateRange, summaryByOperator } from '@/app/lib/dateUtils';
+import { filterByDateRange, filterByName, summaryByOperator } from '@/app/lib/dateUtils';
 import { useLogStore } from '@/app/store/logStore';
 import { usePayrollStore } from '@/app/store/payrollStore';
+import Title from '@/app/ui/title/title';
 
-import Title from '../title/title';
+type PayRollFormProps = {
+  start: string;
+  end: string;
+  setStart: (value: string) => void;
+  setEnd: (value: string) => void;
+};
 
-export default function PayRollForm() {
-  const [start, setStart] = useState<string>('');
-  const [end, setEnd] = useState<string>('');
-
+export default function PayRollForm({ start, end, setStart, setEnd }: PayRollFormProps) {
   const { records } = useLogStore();
   const { addPayroll } = usePayrollStore();
 
@@ -22,12 +24,9 @@ export default function PayRollForm() {
     e.preventDefault();
     const filteredRecords = filterByDateRange(records, start, end);
     const payrollGeneral = summaryByOperator(filteredRecords);
-    const payrollOrdered = payrollGeneral.sort((a: any, b: any) =>
-      a.operator.localeCompare(b.operator),
-    );
+    const payrollOrdered = filterByName(payrollGeneral);
+
     addPayroll(payrollOrdered);
-    setStart('');
-    setEnd('');
   };
 
   return (

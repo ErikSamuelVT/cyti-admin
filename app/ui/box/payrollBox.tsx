@@ -1,18 +1,24 @@
 'use client';
 import { Box, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 
+import { months } from '@/app/lib/constants';
 import { usePayrollStore } from '@/app/store/payrollStore';
 
 import Title from '../title/title';
 
-export default function PayrollBox() {
+type PayrollBoxProps = {
+  start: string;
+  end: string;
+};
+
+export default function PayrollBox({ start, end }: PayrollBoxProps) {
   const { payroll } = usePayrollStore();
 
-  const timestampDate = Date.now();
-  const currentDate = new Date(timestampDate);
-  const now = currentDate.getDate();
-  currentDate.setDate(currentDate.getDay() - 6);
-  const startDate = currentDate.getDate();
+  const currentMonth = new Date().getMonth();
+  const initialDate = start.split('/')[2];
+  const finalDate = end.split('/')[2];
+
+  console.log(payroll);
 
   return (
     <>
@@ -31,9 +37,11 @@ export default function PayrollBox() {
       >
         {payroll.length > 0 && (
           <Box sx={{ mb: 2 }}>
-            <Typography>Buen día, esta es la nomina de la semana</Typography>
+            <Typography>Buen día, esta es la nómina de la semana</Typography>
             <Typography>
-              Del {`${startDate}`} al {`${now}`} de enero 2026
+              {initialDate > finalDate
+                ? `Del ${initialDate} de ${months[currentMonth - 1]} al ${finalDate} de ${months[currentMonth]} del 2026`
+                : `Del ${initialDate} al ${finalDate} de ${months[currentMonth]} del 2026`}
             </Typography>
           </Box>
         )}
