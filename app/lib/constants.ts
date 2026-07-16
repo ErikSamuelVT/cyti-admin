@@ -34,7 +34,6 @@ export const units = [
 export const destinations = [
   'Puebla refrigerado',
   'Puebla seco',
-  'Tlapa',
   'Valle de bravo',
   'Celaya',
   'Tlapa',
