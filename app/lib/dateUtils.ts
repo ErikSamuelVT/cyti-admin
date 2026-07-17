@@ -57,13 +57,12 @@ export const summaryByOperator = (records: TableLog[]): OperatorResult[] => {
   });
 };
 export const filterByName = (payrollGeneral: OperatorResult[]) => {
-  const filtered = [...payrollGeneral].sort((a: any, b: any) =>
+  const filtered = [...payrollGeneral].sort((a: OperatorResult, b: OperatorResult) =>
     a.operator.localeCompare(b.operator),
   );
 
   filtered.forEach((element) => {
     element.tripsByDay.sort((a, b) => {
-      console.log(a, b);
       const indexA = days.findIndex((day) => a.toLowerCase().includes(day.toLowerCase()));
       const indexB = days.findIndex((day) => b.toLowerCase().includes(day.toLowerCase()));
 

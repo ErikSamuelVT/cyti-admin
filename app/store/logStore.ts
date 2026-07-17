@@ -7,7 +7,7 @@ type Store = {
   records: TableLog[];
   setRecords: (records: TableLog[]) => void;
   addRecord: (record: TableLog) => void;
-  deleteRedcord: (id: string) => void;
+  deleteRecord: (id: string) => void;
   updateRecord: (recordUpdated: TableLog) => void;
 };
 
@@ -24,7 +24,7 @@ export const useLogStore = create<Store>()(
           });
           return { records: newRecords };
         }),
-      deleteRedcord: (id: string) =>
+      deleteRecord: (id: string) =>
         set((state) => {
           const newRecords = state.records
             .filter((record) => record.id !== id)

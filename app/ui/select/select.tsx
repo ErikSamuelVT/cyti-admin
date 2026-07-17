@@ -14,8 +14,10 @@ export default function SelectElement({
     <FormControl fullWidth>
       <InputLabel id={id}>{label}</InputLabel>
       <Select labelId={id} name={name} value={value} label={label} onChange={onChange} required>
-        {elements.map((element) => (
-          <MenuItem value={element}>{element}</MenuItem>
+        {elements.map((element, index) => (
+          <MenuItem key={index} value={element}>
+            {element}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>
