@@ -1,4 +1,4 @@
-import { Button, SelectChangeEvent, TextField } from '@mui/material';
+import { AlertColor, Button, SelectChangeEvent, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -9,6 +9,7 @@ import { dataForm } from '@/app/lib/types';
 import { useLogStore } from '@/app/store/logStore';
 
 import SelectElement from '../select/select';
+import Snackbar from '../snackbar/snackbar';
 import Title from '../title/title';
 
 type props = {
@@ -28,6 +29,11 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
   const { addRecord, updateRecord } = useLogStore();
 
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: AlertColor;
+  }>({ open: false, message: '', severity: 'warning' });
 
   const [data, setData] = useState<dataForm>(initialState);
 
@@ -47,8 +53,8 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (data.date === '') {
-      alert('La fecha es obligatoria');
+    if (data.date === null) {
+      setSnackbar({ open: true, message: 'La fecha es obligatoria', severity: 'warning' });
       return;
     }
 
@@ -121,6 +127,12 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
           Guardar
         </Button>
       </form>
+      <Snackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+      />
     </>
   );
 }

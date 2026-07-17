@@ -1,5 +1,6 @@
 'use client';
 import {
+  AlertColor,
   Box,
   Button,
   Paper,
@@ -21,6 +22,7 @@ import { exportJSON, readJSONFile } from '@/app/lib/jsonUtils';
 import { getTripsByOperators, getTripsByUnits } from '@/app/lib/tripUtils';
 import { useLogStore } from '@/app/store/logStore';
 
+import Snackbar from '../snackbar/snackbar';
 import Title from '../title/title';
 
 interface props {
@@ -44,6 +46,11 @@ const VisuallyHiddenInput = styled('input')({
 export default function TableComponent({ title, headers, tableType, setRecordToUpdate }: props) {
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: AlertColor;
+  }>({ open: false, message: '', severity: 'info' });
 
   const { records, deleteRecord, setRecords } = useLogStore();
 
@@ -141,9 +148,9 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
       const content = await readJSONFile(file);
       const contentParsed = JSON.parse(content);
       setRecords(contentParsed);
-      alert('Datos importados correctamente.');
+      setSnackbar({ open: true, message: 'Datos importados correctamente.', severity: 'success' });
     } catch (error) {
-      alert('Error al procesar el archivo.');
+      setSnackbar({ open: true, message: 'Error al procesar el archivo.', severity: 'error' });
     }
   };
 
@@ -221,6 +228,12 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
           </TableFooter>
         </Table>
       </TableContainer>
+      <Snackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+      />
     </>
   );
 }
