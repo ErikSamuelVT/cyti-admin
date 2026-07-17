@@ -22,6 +22,7 @@ import { exportJSON, readJSONFile } from '@/app/lib/jsonUtils';
 import { getTripsByOperators, getTripsByUnits } from '@/app/lib/tripUtils';
 import { useLogStore } from '@/app/store/logStore';
 
+import ConfirmDialog from '../dialog/confirmDialog';
 import Snackbar from '../snackbar/snackbar';
 import Title from '../title/title';
 
@@ -51,6 +52,7 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
     message: string;
     severity: AlertColor;
   }>({ open: false, message: '', severity: 'info' });
+  const [recordIdToDelete, setRecordIdToDelete] = useState<string | null>(null);
 
   const { records, deleteRecord, setRecords } = useLogStore();
 
@@ -92,7 +94,7 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
               Actualizar
             </Button>
             <Button
-              onClick={() => deleteRecord(log.id)}
+              onClick={() => setRecordIdToDelete(log.id)}
               variant="contained"
               size="small"
               color="error"
@@ -233,6 +235,16 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
         message={snackbar.message}
         severity={snackbar.severity}
         onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+      />
+      <ConfirmDialog
+        open={recordIdToDelete !== null}
+        title="Eliminar registro"
+        message="¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer."
+        onConfirm={() => {
+          if (recordIdToDelete) deleteRecord(recordIdToDelete);
+          setRecordIdToDelete(null);
+        }}
+        onCancel={() => setRecordIdToDelete(null)}
       />
     </>
   );
