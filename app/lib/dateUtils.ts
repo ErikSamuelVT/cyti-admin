@@ -35,18 +35,18 @@ export const summaryByOperator = (records: TableLog[]): OperatorResult[] => {
     const countByDestinity: Record<string, number> = {};
 
     trips.forEach((e) => {
-      countByDestinity[e.destinity] = (countByDestinity[e.destinity] || 0) + 1;
+      countByDestinity[e.destiny] = (countByDestinity[e.destiny] || 0) + 1;
     });
 
     const summary = Object.entries(countByDestinity)
-      .map(([destinity, nTrips]) => `${nTrips} ${destinity}`)
+      .map(([destiny, nTrips]) => `${nTrips} ${destiny}`)
       .join(', ');
 
     const tripsByDay = trips.map((trip) => {
       const day = getDayName(parseDate(trip.date!));
-      return trip.destinity === 'Puebla refrigerado'
+      return trip.destiny === 'Puebla refrigerado'
         ? `- ${capitalize(day)} ${trip.nDestinations} ${(trip.nDestinations ?? 0) > 1 ? 'tiros' : 'tiro'} / Tarifa ${(trip.nDestinations ?? 0) > 2 ? 'B' : 'A'}`
-        : `- ${capitalize(day)} ${trip.destinity}`;
+        : `- ${capitalize(day)} ${trip.destiny}`;
     });
 
     return {

@@ -34,13 +34,13 @@ export default function PayRollForm({ start, end, setStart, setEnd }: PayRollFor
       <Title title="Generar nómina" />
       <form className="flex flex-col gap-4 mt-2 max-h-[430]" onSubmit={handleSubmit}>
         <DatePicker
-          name="to"
+          name="from"
           label="Desde"
           value={start ? dayjs(start, 'YYYY-MM-DD') : null}
           onChange={(value) => setStart(value?.format('YYYY/MM/DD') || '')}
         />
         <DatePicker
-          name="from"
+          name="to"
           label="Hasta"
           value={end ? dayjs(end, 'YYYY/MM/DD') : null}
           onChange={(value) => setEnd(value?.format('YYYY/MM/DD') || '')}
