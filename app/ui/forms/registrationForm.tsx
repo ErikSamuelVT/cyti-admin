@@ -37,7 +37,7 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  const handleChageDatePicker = (value: Dayjs | null) => {
+  const handleChangeDatePicker = (value: Dayjs | null) => {
     setData((prev) => ({
       ...prev,
       date: value?.format('YYYY/MM/DD') || '',
@@ -79,7 +79,7 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
           name="date"
           label="Fecha"
           value={data.date ? dayjs(data.date, 'YYYY/MM/DD') : null}
-          onChange={handleChageDatePicker}
+          onChange={handleChangeDatePicker}
         />
 
         <SelectElement

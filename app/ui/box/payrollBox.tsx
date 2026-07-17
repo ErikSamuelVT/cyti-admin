@@ -15,10 +15,9 @@ export default function PayrollBox({ start, end }: PayrollBoxProps) {
   const { payroll } = usePayrollStore();
 
   const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
   const initialDate = start.split('/')[2];
   const finalDate = end.split('/')[2];
-
-  console.log(payroll);
 
   return (
     <>
@@ -40,8 +39,8 @@ export default function PayrollBox({ start, end }: PayrollBoxProps) {
             <Typography>Buen día, esta es la nómina de la semana</Typography>
             <Typography>
               {initialDate > finalDate
-                ? `Del ${initialDate} de ${months[currentMonth - 1]} al ${finalDate} de ${months[currentMonth]} del 2026`
-                : `Del ${initialDate} al ${finalDate} de ${months[currentMonth]} del 2026`}
+                ? `Del ${initialDate} de ${months[currentMonth !== 0 ? currentMonth - 1 : 0]} al ${finalDate} de ${months[currentMonth]} del ${currentYear}`
+                : `Del ${initialDate} al ${finalDate} de ${months[currentMonth]} del ${currentYear}`}
             </Typography>
           </Box>
         )}

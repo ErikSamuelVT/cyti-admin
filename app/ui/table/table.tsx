@@ -29,24 +29,23 @@ interface props {
   tableType: 'log' | 'operators' | 'units';
   setRecordToUpdate?: React.Dispatch<React.SetStateAction<TableLog | null>>;
 }
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 export default function TableComponent({ title, headers, tableType, setRecordToUpdate }: props) {
   const rowsPerPage = 5;
   const [page, setPage] = useState(0);
 
-  const { records, deleteRedcord, setRecords } = useLogStore();
-
-  const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
+  const { records, deleteRecord, setRecords } = useLogStore();
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -86,7 +85,7 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
               Actualizar
             </Button>
             <Button
-              onClick={() => deleteRedcord(log.id)}
+              onClick={() => deleteRecord(log.id)}
               variant="contained"
               size="small"
               color="error"
