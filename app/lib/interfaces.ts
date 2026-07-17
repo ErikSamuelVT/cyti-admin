@@ -6,7 +6,7 @@ export interface TableLog {
   date: string | null;
   operator: string;
   unit: string;
-  destinity: string;
+  destiny: string;
   nDestinations?: number;
 }
 

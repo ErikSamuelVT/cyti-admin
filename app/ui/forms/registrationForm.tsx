@@ -21,7 +21,7 @@ const initialState = {
   date: null,
   operator: '',
   unit: '',
-  destinity: '',
+  destiny: '',
   nDestinations: 0,
 };
 
@@ -105,14 +105,14 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
           elements={units}
         />
         <SelectElement
-          id="destinity"
-          name="destinity"
+          id="destiny"
+          name="destiny"
           label="Destino"
-          value={data.destinity}
+          value={data.destiny}
           onChange={handleChange}
           elements={destinations}
         />
-        {(data.destinity === 'Puebla refrigerado' || data.destinity === 'Tlapa refrigerado') && (
+        {(data.destiny === 'Puebla refrigerado' || data.destiny === 'Tlapa refrigerado') && (
           <TextField
             label="Número de tiros"
             name="nDestinations"

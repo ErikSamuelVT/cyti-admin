@@ -77,10 +77,10 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
         <TableCell align="center">{log.unit}</TableCell>
         {log.nDestinations !== undefined && log.nDestinations > 0 ? (
           <TableCell align="center">
-            {log.destinity} ({log.nDestinations})
+            {log.destiny} ({log.nDestinations})
           </TableCell>
         ) : (
-          <TableCell align="center">{log.destinity}</TableCell>
+          <TableCell align="center">{log.destiny}</TableCell>
         )}
 
         <TableCell align="center">
