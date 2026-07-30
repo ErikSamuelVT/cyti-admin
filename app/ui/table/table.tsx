@@ -17,7 +17,11 @@ import {
 import { styled } from '@mui/material/styles';
 import { Fragment, useMemo, useState } from 'react';
 
-import { OperatorTrip, TableLog, UnitTrip } from '@/app/lib/interfaces';
+import {
+  getRefrigeratedTripsByNDestinations,
+  getTripsByDestination,
+} from '@/app/lib/destinationUtils';
+import { DestinationTrip, OperatorTrip, RefrigeratedTrip, TableLog, UnitTrip } from '@/app/lib/interfaces';
 import { exportJSON, readJSONFile } from '@/app/lib/jsonUtils';
 import { getTripsByOperators, getTripsByUnits } from '@/app/lib/tripUtils';
 import { useLogStore } from '@/app/store/logStore';
@@ -29,7 +33,7 @@ import Title from '../title/title';
 interface props {
   title: string;
   headers: string[];
-  tableType: 'log' | 'operators' | 'units';
+  tableType: 'log' | 'operators' | 'units' | 'destinations' | 'refrigeratedTrips';
   setRecordToUpdate?: React.Dispatch<React.SetStateAction<TableLog | null>>;
 }
 const VisuallyHiddenInput = styled('input')({
@@ -64,8 +68,20 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
 
   const tripsByOperator = useMemo(() => getTripsByOperators(records), [records]);
 
+  const tripsByDestination = useMemo(() => getTripsByDestination(records), [records]);
+
+  const refrigeratedTrips = useMemo(() => getRefrigeratedTripsByNDestinations(records), [records]);
+
   const data =
-    tableType === 'log' ? records : tableType === 'operators' ? tripsByOperator : tripsByUnit;
+    tableType === 'log'
+      ? records
+      : tableType === 'operators'
+        ? tripsByOperator
+        : tableType === 'units'
+          ? tripsByUnit
+          : tableType === 'destinations'
+            ? tripsByDestination
+            : refrigeratedTrips;
 
   const paginatedRows = data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -125,7 +141,25 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
     );
   };
 
-  const renderUI = (item: TableLog | OperatorTrip | UnitTrip) => {
+  const rowsDestinations = (destiny: DestinationTrip) => {
+    return (
+      <Fragment key={destiny.destiny}>
+        <TableCell align="center">{destiny.destiny}</TableCell>
+        <TableCell align="center">{destiny.trips}</TableCell>
+      </Fragment>
+    );
+  };
+
+  const rowsRefrigeratedTrips = (trip: RefrigeratedTrip) => {
+    return (
+      <Fragment key={trip.nDestinations}>
+        <TableCell align="center">{trip.nDestinations}</TableCell>
+        <TableCell align="center">{trip.trips}</TableCell>
+      </Fragment>
+    );
+  };
+
+  const renderUI = (item: TableLog | OperatorTrip | UnitTrip | DestinationTrip | RefrigeratedTrip) => {
     switch (tableType) {
       case 'log':
         const log = item as TableLog;
@@ -136,6 +170,12 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
       case 'units':
         const unit = item as UnitTrip;
         return rowsUnits(unit);
+      case 'destinations':
+        const destiny = item as DestinationTrip;
+        return rowsDestinations(destiny);
+      case 'refrigeratedTrips':
+        const trip = item as RefrigeratedTrip;
+        return rowsRefrigeratedTrips(trip);
       default:
         break;
     }
@@ -195,11 +235,17 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
 
       <TableContainer
         component={Paper}
-        className={`${records.length === 0 && 'hidden'} mt-5 min-h-[370]`}
+        className={`${records.length === 0 && 'hidden'} mt-5`}
+        sx={{ minHeight: 370, display: 'flex', flexDirection: 'column' }}
       >
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
+        <Table
+          aria-label="simple table"
+          sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+        >
+          <TableHead
+            sx={{ display: 'table', width: '100%', tableLayout: 'fixed' }}
+          >
+            <TableRow sx={{ display: 'table-row' }}>
               {headers.map((header) => (
                 <TableCell key={header} align="center" className="text-2xl">
                   {header}
@@ -208,7 +254,20 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
               {tableType === 'log' && <TableCell align="center">Acciones</TableCell>}
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              flex: 1,
+              '& .MuiTableRow-root': { display: 'flex', width: '100%' },
+              '& .MuiTableCell-root': {
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              },
+            }}
+          >
             {paginatedRows.map((item, index) => {
               return (
                 <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -217,8 +276,10 @@ export default function TableComponent({ title, headers, tableType, setRecordToU
               );
             })}
           </TableBody>
-          <TableFooter>
-            <TableRow>
+          <TableFooter
+            sx={{ display: 'table', width: '100%', tableLayout: 'fixed' }}
+          >
+            <TableRow sx={{ display: 'table-row' }}>
               <TablePagination
                 rowsPerPageOptions={[]}
                 count={data.length}
