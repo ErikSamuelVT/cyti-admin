@@ -21,6 +21,13 @@ export interface OperatorTrip extends Trips {
 export interface UnitTrip extends Trips {
   unit: string;
 }
+export interface DestinationTrip extends Trips {
+  destiny: string;
+}
+export interface RefrigeratedTrip {
+  nDestinations: string;
+  trips: number;
+}
 export interface SelectElementProps {
   id: string;
   name: string;
