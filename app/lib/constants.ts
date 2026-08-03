@@ -33,6 +33,7 @@ export const units = [
 
 export const destinations = [
   'Puebla refrigerado',
+  'Puebla refrigerado - C',
   'Puebla seco',
   'Valle de bravo',
   'Celaya',
