@@ -18,7 +18,8 @@ export const filterByDateRange = (records: TableLog[], start: string, end: strin
   const endDate = new Date(end);
 
   return records.filter((record) => {
-    const recordDate = parseDate(record.date!);
+    if (!record.date) return false;
+    const recordDate = parseDate(record.date);
     return recordDate >= startDate && recordDate <= endDate;
   });
 };
@@ -35,19 +36,26 @@ export const summaryByOperator = (records: TableLog[]): OperatorResult[] => {
     const countByDestinity: Record<string, number> = {};
 
     trips.forEach((e) => {
-      countByDestinity[e.destiny] = (countByDestinity[e.destiny] || 0) + 1;
+      const normalizedDestiny = e.destiny.replace(' - C', '');
+      countByDestinity[normalizedDestiny] = (countByDestinity[normalizedDestiny] || 0) + 1;
     });
 
     const summary = Object.entries(countByDestinity)
       .map(([destiny, nTrips]) => `${nTrips} ${destiny}`)
       .join(', ');
 
-    const tripsByDay = trips.map((trip) => {
-      const day = getDayName(parseDate(trip.date!));
-      return trip.destiny === 'Puebla refrigerado'
-        ? `- ${capitalize(day)} ${trip.nDestinations} ${(trip.nDestinations ?? 0) > 1 ? 'tiros' : 'tiro'} / Tarifa ${(trip.nDestinations ?? 0) > 2 ? 'B' : 'A'}`
-        : `- ${capitalize(day)} ${trip.destiny}`;
-    });
+    const tripsByDay = trips
+      .filter((trip) => trip.date)
+      .map((trip) => {
+        const day = getDayName(parseDate(trip.date!));
+        const destiny = trip.destiny.replace(' - C', '');
+
+        return destiny === 'Puebla refrigerado'
+          ? `- ${capitalize(day)} ${trip.nDestinations} ${(trip.nDestinations ?? 0) > 1 ? 'tiros' : 'tiro'} / Tarifa ${(trip.nDestinations ?? 0) > 2 ? 'B' : 'A'} ${trip.destiny.includes('- C') && ' - C'}`
+          : `- ${capitalize(day)} ${trip.destiny}`;
+      });
+
+    console.log(countByDestinity);
 
     return {
       operator,
