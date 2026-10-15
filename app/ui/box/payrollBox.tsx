@@ -16,8 +16,10 @@ export default function PayrollBox({ start, end }: PayrollBoxProps) {
 
   const startParts = start.split('/');
   const endParts = end.split('/');
-  const startDate = startParts.length === 3 ? new Date(+startParts[0], +startParts[1] - 1, +startParts[2]) : null;
-  const endDate = endParts.length === 3 ? new Date(+endParts[0], +endParts[1] - 1, +endParts[2]) : null;
+  const startDate =
+    startParts.length === 3 ? new Date(+startParts[0], +startParts[1] - 1, +startParts[2]) : null;
+  const endDate =
+    endParts.length === 3 ? new Date(+endParts[0], +endParts[1] - 1, +endParts[2]) : null;
 
   const isSameMonth = startDate && endDate && startDate.getMonth() === endDate.getMonth();
 

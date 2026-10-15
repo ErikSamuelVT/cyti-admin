@@ -51,11 +51,9 @@ export const summaryByOperator = (records: TableLog[]): OperatorResult[] => {
         const destiny = trip.destiny.replace(' - C', '');
 
         return destiny === 'Puebla refrigerado'
-          ? `- ${capitalize(day)} ${trip.nDestinations} ${(trip.nDestinations ?? 0) > 1 ? 'tiros' : 'tiro'} / Tarifa ${(trip.nDestinations ?? 0) > 2 ? 'B' : 'A'} ${trip.destiny.includes('- C') && ' - C'}`
+          ? `- ${capitalize(day)} ${trip.nDestinations} ${(trip.nDestinations ?? 0) > 1 ? 'tiros' : 'tiro'} / Tarifa ${(trip.nDestinations ?? 0) > 2 ? 'B' : 'A'} ${trip.destiny.includes('- C') ? ' - C' : ''}`
           : `- ${capitalize(day)} ${trip.destiny}`;
       });
-
-    console.log(countByDestinity);
 
     return {
       operator,
