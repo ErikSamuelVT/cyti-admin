@@ -1,3 +1,4 @@
+'use client';
 import { AlertColor, Button, SelectChangeEvent, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
@@ -118,7 +119,7 @@ export default function RegistrationForm({ recordToUpdate, setRecordToUpdate }: 
           <TextField
             label="Número de tiros"
             name="nDestinations"
-            type="text"
+            type="number"
             variant="standard"
             value={data.nDestinations}
             onChange={handleChange}

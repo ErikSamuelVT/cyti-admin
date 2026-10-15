@@ -22,7 +22,7 @@ export default function PayRollForm({ start, end, setStart, setEnd }: PayRollFor
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const filteredRecords = filterByDateRange(records, start, end);
+    const filteredRecords = filterByDateRange(records, start, end); //Trae los registros filtrados por fecha
     const payrollGeneral = summaryByOperator(filteredRecords);
     const payrollOrdered = filterByName(payrollGeneral);
 
@@ -36,7 +36,7 @@ export default function PayRollForm({ start, end, setStart, setEnd }: PayRollFor
         <DatePicker
           name="from"
           label="Desde"
-          value={start ? dayjs(start, 'YYYY-MM-DD') : null}
+          value={start ? dayjs(start, 'YYYY/MM/DD') : null}
           onChange={(value) => setStart(value?.format('YYYY/MM/DD') || '')}
         />
         <DatePicker

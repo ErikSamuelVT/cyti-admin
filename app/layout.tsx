@@ -2,7 +2,7 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 
-import ThemeRegistry from './theme-registry';
+import Providers from './providers';
 import { roboto } from './ui/fonts';
 import Header from './ui/header/header';
 
@@ -20,10 +20,10 @@ export default function RootLayout({
     <html lang="es">
       <head></head>
       <body className={`${roboto.className} antialiased`}>
-        <ThemeRegistry>
+        <Providers>
           <Header />
           {children}
-        </ThemeRegistry>
+        </Providers>
       </body>
     </html>
   );

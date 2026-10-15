@@ -14,10 +14,12 @@ type PayrollBoxProps = {
 export default function PayrollBox({ start, end }: PayrollBoxProps) {
   const { payroll } = usePayrollStore();
 
-  const currentMonth = new Date().getMonth();
-  const currentYear = new Date().getFullYear();
-  const initialDate = start.split('/')[2];
-  const finalDate = end.split('/')[2];
+  const startParts = start.split('/');
+  const endParts = end.split('/');
+  const startDate = startParts.length === 3 ? new Date(+startParts[0], +startParts[1] - 1, +startParts[2]) : null;
+  const endDate = endParts.length === 3 ? new Date(+endParts[0], +endParts[1] - 1, +endParts[2]) : null;
+
+  const isSameMonth = startDate && endDate && startDate.getMonth() === endDate.getMonth();
 
   return (
     <>
@@ -34,13 +36,13 @@ export default function PayrollBox({ start, end }: PayrollBoxProps) {
           overflowY: 'auto',
         }}
       >
-        {payroll.length > 0 && (
+        {payroll.length > 0 && startDate && endDate && (
           <Box sx={{ mb: 2 }}>
             <Typography>Buen día, esta es la nómina de la semana</Typography>
             <Typography>
-              {initialDate > finalDate
-                ? `Del ${initialDate} de ${months[currentMonth !== 0 ? currentMonth - 1 : 0]} al ${finalDate} de ${months[currentMonth]} del ${currentYear}`
-                : `Del ${initialDate} al ${finalDate} de ${months[currentMonth]} del ${currentYear}`}
+              {isSameMonth
+                ? `Del ${startDate.getDate()} al ${endDate.getDate()} de ${months[startDate.getMonth()]} del ${startDate.getFullYear()}`
+                : `Del ${startDate.getDate()} de ${months[startDate.getMonth()]} al ${endDate.getDate()} de ${months[endDate.getMonth()]} del ${endDate.getFullYear()}`}
             </Typography>
           </Box>
         )}

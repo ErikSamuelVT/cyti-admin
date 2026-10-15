@@ -36,10 +36,13 @@ export const useLogStore = create<Store>()(
         }),
       updateRecord: (recordUpdated: TableLog) =>
         set((state) => {
-          const leakedRecord = state.records.map((record) =>
-            record.id === recordUpdated.id ? { ...record, ...recordUpdated } : record,
-          );
-          return { records: leakedRecord };
+          const newRecords = state.records
+            .map((record) => (record.id === recordUpdated.id ? { ...record, ...recordUpdated } : record))
+            .sort((a, b) => {
+              if (!a.date || !b.date) return 0;
+              return new Date(b.date).getTime() - new Date(a.date).getTime();
+            });
+          return { records: newRecords };
         }),
     }),
     {
